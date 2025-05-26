@@ -41,6 +41,8 @@ fetch('data/bemowo.geojson')
 
     addBusStopsWithLines('data/bus_lines.geojson', 'green');
     addTramStopsWithLines('data/tram_lines.geojson', 'blue');
+
+    addTerminusLayer('data/petle.geojson'); // Dodaj warstwę pętli/krańców
   });
 
 // Funkcja do ładowania linii (bus/tram)
@@ -68,13 +70,17 @@ function getStopName(feature) {
   return "Przystanek";
 }
 
-// Przystanki autobusowe: zielone kropki, popup z nazwą i liniami
+// Przystanki autobusowe: zielone kropki, tylko platformy, popup z nazwą i liniami
 function addBusStopsWithLines(url, stopColor) {
   fetch(url)
     .then(res => res.json())
     .then(data => {
+      // tylko platformy!
       const pointFeatures = data.features.filter(
-        f => isFeatureInBemowo(f) && f.geometry.type === "Point"
+        f => isFeatureInBemowo(f) &&
+             f.geometry.type === "Point" &&
+             Array.isArray(f.properties["@relations"]) &&
+             f.properties["@relations"].some(rel => rel.role === "platform")
       );
       L.geoJSON({ type: "FeatureCollection", features: pointFeatures }, {
         pointToLayer: function(feature, latlng) {
@@ -114,13 +120,17 @@ function addBusStopsWithLines(url, stopColor) {
     });
 }
 
-// Przystanki tramwajowe: niebieskie kropki, popup z nazwą i liniami tramwajowymi
+// Przystanki tramwajowe: niebieskie kropki, tylko platformy, popup z nazwą i liniami tramwajowymi
 function addTramStopsWithLines(url, stopColor) {
   fetch(url)
     .then(res => res.json())
     .then(data => {
+      // tylko platformy!
       const pointFeatures = data.features.filter(
-        f => isFeatureInBemowo(f) && f.geometry.type === "Point"
+        f => isFeatureInBemowo(f) &&
+             f.geometry.type === "Point" &&
+             Array.isArray(f.properties["@relations"]) &&
+             f.properties["@relations"].some(rel => rel.role === "platform")
       );
       L.geoJSON({ type: "FeatureCollection", features: pointFeatures }, {
         pointToLayer: function(feature, latlng) {
@@ -155,6 +165,44 @@ function addTramStopsWithLines(url, stopColor) {
             <b>Tramwaje:</b> ${trams.length ? trams.join(", ") : "brak"}
           `;
           layer.bindPopup(popupHtml);
+        }
+      }).addTo(map);
+    });
+}
+
+// Funkcja do dodania pętli/krańców z podziałem na kategorie
+function addTerminusLayer(url) {
+  fetch(url)
+    .then(res => res.json())
+    .then(data => {
+      L.geoJSON(data, {
+        pointToLayer: function(feature, latlng) {
+          // Wybierz styl w zależności od typu i kategorii
+          let color = "#222", radius = 10, shape = "circle";
+          switch (feature.properties.kategoria) {
+            case "a": // istniejące, zgodne
+              color = "green"; break;
+            case "b": // istniejące, niezgodne
+              color = "red"; break;
+            case "c": // istniejące, nieuwzględnione
+              color = "orange"; break;
+            case "d": // planowane, zgodne
+              color = "blue"; break;
+          }
+          // Prosty sposób dla Leaflet – różne kolory, shape tylko przez własne ikony/SVG, tu tylko kolor
+          return L.circleMarker(latlng, {
+            radius: radius,
+            fillColor: color,
+            color: "#fff",
+            weight: 2,
+            opacity: 1,
+            fillOpacity: 0.95
+          });
+        },
+        onEachFeature: function(feature, layer) {
+          layer.bindPopup(
+            `<b>${feature.properties.name}</b><br>${feature.properties.type}<br>Kategoria: ${feature.properties.kategoria}<br><i>${feature.properties.opis || ""}</i>`
+          );
         }
       }).addTo(map);
     });

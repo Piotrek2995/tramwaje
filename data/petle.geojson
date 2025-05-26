@@ -1,0 +1,122 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Nowe Bemowo",
+        "type": "tram",
+        "kategoria": "a",
+        "opis": "Pętla tramwajowa Nowe Bemowo; istniejąca, zgodna z MPZP"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [20.92434, 52.25997]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Stare Bemowo",
+        "type": "bus",
+        "kategoria": "a",
+        "opis": "Pętla autobusowa Stare Bemowo; istniejąca, zgodna z MPZP"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [20.89830, 52.25830]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Górczewska",
+        "type": "tram",
+        "kategoria": "b",
+        "opis": "Pętla tramwajowa Górczewska; istniejąca, w MPZP teren przeznaczony pod inną zabudowę"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [20.90061, 52.23906]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Metro Bemowo",
+        "type": "bus",
+        "kategoria": "c",
+        "opis": "Kraniec autobusowy Metro Bemowo; istniejący, ale nieujęty w MPZP jako teren pod transport publiczny"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [20.91321, 52.23915]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Pętla Boernerowo",
+        "type": "tram",
+        "kategoria": "a",
+        "opis": "Pętla tramwajowa Boernerowo; istniejąca, zgodna z MPZP"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [20.90020, 52.26357]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Os. Górczewska",
+        "type": "bus",
+        "kategoria": "a",
+        "opis": "Pętla autobusowa Os. Górczewska; istniejąca, zgodna z MPZP"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [20.90062, 52.23906]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Fort Radiowo",
+        "type": "bus",
+        "kategoria": "b",
+        "opis": "Pętla autobusowa Fort Radiowo; istniejąca, w MPZP teren przeznaczony pod inną zabudowę"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [20.88506, 52.26462]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Dywizjonu 303",
+        "type": "bus",
+        "kategoria": "c",
+        "opis": "Kraniec autobusowy Dywizjonu 303; istniejący, nieuwzględniony w MPZP"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [20.91121, 52.24702]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Planowana pętla Karolin",
+        "type": "tram",
+        "kategoria": "d",
+        "opis": "Planowana pętla tramwajowa Karolin; jeszcze nie istnieje, ujęta w MPZP"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [20.88168, 52.21442]
+      }
+    }
+  ]
+}
