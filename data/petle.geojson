@@ -117,6 +117,19 @@
         "type": "Point",
         "coordinates": [20.88168, 52.21442]
       }
+    },
+{
+      "type": "Feature",
+      "properties": {
+        "name": "Cmentarz Wolski",
+        "type": "bus+tram",
+        "kategoria": "a",
+        "opis": "Pętla autobusowa Cmentarz Wolski; istniejąca, zgodna z MPZP"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [20.93102982655353, 52.224784599999445]
+      }
     }
   ]
 }

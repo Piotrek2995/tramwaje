@@ -8,6 +8,7 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 let bemowoBoundary;
 let bemowoLayer;
+let terminusLayer; // warstwa pętli/krańców
 
 // Sprawdza czy element leży w granicach Bemowa
 function isFeatureInBemowo(feature) {
@@ -35,14 +36,17 @@ fetch('data/bemowo.geojson')
     bemowoLayer = L.geoJSON(data, { color: 'gray', weight: 1 }).addTo(map);
     map.fitBounds(bemowoLayer.getBounds());
 
-    // Najpierw linie, potem przystanki. Przystanki tramwajowe na końcu (nad innymi warstwami)
+    // Najpierw linie, potem przystanki
     addLines('data/tram_lines.geojson', 'blue');
     addLines('data/bus_lines.geojson', 'green', true);
 
     addBusStopsWithLines('data/bus_lines.geojson', 'green');
     addTramStopsWithLines('data/tram_lines.geojson', 'blue');
 
-    addTerminusLayer('data/petle.geojson'); // Dodaj warstwę pętli/krańców
+    // PĘTLE NA SAMYM KOŃCU – zawsze nad innymi warstwami
+    addTerminusLayer('data/petle.geojson');
+
+    addLegend();
   });
 
 // Funkcja do ładowania linii (bus/tram)
@@ -170,26 +174,25 @@ function addTramStopsWithLines(url, stopColor) {
     });
 }
 
-// Funkcja do dodania pętli/krańców z podziałem na kategorie
+// Funkcja do dodania pętli/krańców z podziałem na kategorie (TERMINUS NA WIERZCHU!)
 function addTerminusLayer(url) {
   fetch(url)
     .then(res => res.json())
     .then(data => {
-      L.geoJSON(data, {
+      // Jeśli istnieje poprzednia warstwa, usuń ją, by zawsze była na wierzchu po aktualizacji
+      if (terminusLayer) {
+        map.removeLayer(terminusLayer);
+      }
+      terminusLayer = L.geoJSON(data, {
         pointToLayer: function(feature, latlng) {
           // Wybierz styl w zależności od typu i kategorii
-          let color = "#222", radius = 10, shape = "circle";
+          let color = "#222", radius = 10;
           switch (feature.properties.kategoria) {
-            case "a": // istniejące, zgodne
-              color = "green"; break;
-            case "b": // istniejące, niezgodne
-              color = "red"; break;
-            case "c": // istniejące, nieuwzględnione
-              color = "orange"; break;
-            case "d": // planowane, zgodne
-              color = "blue"; break;
+            case "a": color = "green"; break;
+            case "b": color = "red"; break;
+            case "c": color = "orange"; break;
+            case "d": color = "blue"; break;
           }
-          // Prosty sposób dla Leaflet – różne kolory, shape tylko przez własne ikony/SVG, tu tylko kolor
           return L.circleMarker(latlng, {
             radius: radius,
             fillColor: color,
@@ -205,5 +208,42 @@ function addTerminusLayer(url) {
           );
         }
       }).addTo(map);
+
+      // Warstwa pętli/krańców na samą górę
+      terminusLayer.bringToFront();
     });
+}
+
+// Funkcja dodająca legendę do mapy
+function addLegend() {
+  const legend = L.control({ position: "bottomright" });
+
+  legend.onAdd = function (map) {
+    const div = L.DomUtil.create("div", "info legend");
+    div.style.background = "white";
+    div.style.padding = "10px";
+    div.style.borderRadius = "10px";
+    div.style.boxShadow = "0 2px 8px rgba(0,0,0,0.15)";
+
+    div.innerHTML = `
+      <b>Legenda</b><br>
+      <i style="background:green;width:12px;height:12px;display:inline-block;border-radius:50%"></i>
+        Zielone linie/punkty – Autobusy/pętle kat. a<br>
+      <i style="background:blue;width:12px;height:12px;display:inline-block;border-radius:50%"></i>
+        Niebieskie linie/punkty – Tramwaje/pętle kat. d<br>
+      <i style="background:red;width:12px;height:12px;display:inline-block;border-radius:50%"></i>
+        Czerwone punkty – Pętle kat. b<br>
+      <i style="background:orange;width:12px;height:12px;display:inline-block;border-radius:50%"></i>
+        Pomarańczowe punkty – Pętle kat. c<br>
+      <hr style="margin:4px 0">
+      <b>Kategorie pętli:</b><br>
+      <b>a</b>: Istniejąca, zgodna z MPZP<br>
+      <b>b</b>: Istniejąca, niezgodna z MPZP<br>
+      <b>c</b>: Istniejąca, nieuwzględniona w MPZP<br>
+      <b>d</b>: Planowana, zgodna z MPZP
+    `;
+    return div;
+  };
+
+  legend.addTo(map);
 }
