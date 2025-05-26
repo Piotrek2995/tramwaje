@@ -58,7 +58,7 @@
       "properties": {
         "name": "Pętla Boernerowo",
         "type": "tram",
-        "kategoria": "a",
+        "kategoria": "c",
         "opis": "Pętla tramwajowa Boernerowo; istniejąca, zgodna z MPZP"
       },
       "geometry": {
@@ -84,7 +84,7 @@
       "properties": {
         "name": "Fort Radiowo",
         "type": "bus",
-        "kategoria": "b",
+        "kategoria": "c",
         "opis": "Pętla autobusowa Fort Radiowo; istniejąca, w MPZP teren przeznaczony pod inną zabudowę"
       },
       "geometry": {
@@ -97,8 +97,8 @@
       "properties": {
         "name": "Dywizjonu 303",
         "type": "bus",
-        "kategoria": "c",
-        "opis": "Kraniec autobusowy Dywizjonu 303; istniejący, nieuwzględniony w MPZP"
+        "kategoria": "a",
+        "opis": "Kraniec autobusowy Dywizjonu 303; istniejący, uwzględniony w MPZP"
       },
       "geometry": {
         "type": "Point",

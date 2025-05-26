@@ -33,7 +33,7 @@ fetch('data/bemowo.geojson')
   .then(res => res.json())
   .then(data => {
     bemowoBoundary = data;
-    bemowoLayer = L.geoJSON(data, { color: 'gray', weight: 1 }).addTo(map);
+    bemowoLayer = L.geoJSON(data, { color: 'gray', weight: 10 }).addTo(map);
     map.fitBounds(bemowoLayer.getBounds());
 
     // Najpierw linie, potem przystanki
