@@ -8,7 +8,8 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 let bemowoBoundary;
 let bemowoLayer;
-let terminusLayer; // warstwa pętli/krańców
+let tramLinesLayer, busLinesLayer, terminusLayer;
+let loadedMainLayers = 0;
 
 // Sprawdza czy element leży w granicach Bemowa
 function isFeatureInBemowo(feature) {
@@ -57,9 +58,15 @@ function addLines(url, lineColor, isBus = false) {
       const lineFeatures = data.features.filter(
         f => isFeatureInBemowo(f) && (f.geometry.type === "LineString" || f.geometry.type === "MultiLineString")
       );
-      L.geoJSON({ type: "FeatureCollection", features: lineFeatures }, {
+      const layer = L.geoJSON({ type: "FeatureCollection", features: lineFeatures }, {
         style: { color: lineColor, weight: 3, dashArray: isBus ? '5,5' : undefined }
-      }).addTo(map);
+      });
+      if (isBus) {
+        busLinesLayer = layer.addTo(map);
+      } else {
+        tramLinesLayer = layer.addTo(map);
+      }
+      addLayersControlIfReady();
     });
 }
 
@@ -179,13 +186,9 @@ function addTerminusLayer(url) {
   fetch(url)
     .then(res => res.json())
     .then(data => {
-      // Jeśli istnieje poprzednia warstwa, usuń ją, by zawsze była na wierzchu po aktualizacji
-      if (terminusLayer) {
-        map.removeLayer(terminusLayer);
-      }
+      if (terminusLayer) map.removeLayer(terminusLayer);
       terminusLayer = L.geoJSON(data, {
         pointToLayer: function(feature, latlng) {
-          // Wybierz styl w zależności od typu i kategorii
           let color = "#222", radius = 10;
           switch (feature.properties.kategoria) {
             case "a": color = "green"; break;
@@ -209,9 +212,46 @@ function addTerminusLayer(url) {
         }
       }).addTo(map);
 
-      // Warstwa pętli/krańców na samą górę
       terminusLayer.bringToFront();
+
+      // DODAJ Leaflet Search dla pętli/krańców
+      addSearchControl(terminusLayer);
+      addLayersControlIfReady();
     });
+}
+
+// Funkcja dodająca wyszukiwarkę do wybranej warstwy
+function addSearchControl(layer) {
+  if (!layer) return;
+  const searchControl = new L.Control.Search({
+    layer: layer,
+    propertyName: 'name', // przeszukuje po polu "name"
+    marker: false,
+    moveToLocation: function(latlng, title, map) {
+      map.setView(latlng, 16); // powiększa na wybrany obiekt
+    }
+  });
+  map.addControl(searchControl);
+}
+
+// Kontrolka warstw (przełączanie widoczności)
+function addLayersControlIfReady() {
+  loadedMainLayers++;
+  if (loadedMainLayers === 3) {
+    addLayersControl();
+  }
+}
+
+function addLayersControl() {
+  if (map.layersControl) map.removeControl(map.layersControl);
+  const overlays = {};
+  if (tramLinesLayer) overlays["Linie tramwajowe"] = tramLinesLayer;
+  if (busLinesLayer) overlays["Linie autobusowe"] = busLinesLayer;
+  if (terminusLayer) overlays["Pętle/krańce"] = terminusLayer;
+  map.layersControl = L.control.layers(null, overlays, {
+    position: "topright",
+    collapsed: false
+  }).addTo(map);
 }
 
 // Funkcja dodająca legendę do mapy

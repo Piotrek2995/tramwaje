@@ -71,7 +71,7 @@
       "properties": {
         "name": "Os. Górczewska",
         "type": "bus",
-        "kategoria": "a",
+        "kategoria": "b",
         "opis": "Pętla autobusowa Os. Górczewska; istniejąca, zgodna z MPZP"
       },
       "geometry": {
@@ -110,15 +110,15 @@
       "properties": {
         "name": "Planowana pętla Karolin",
         "type": "tram",
-        "kategoria": "d",
-        "opis": "Planowana pętla tramwajowa Karolin; jeszcze nie istnieje, ujęta w MPZP"
+        "kategoria": "a",
+        "opis": "Planowana pętla tramwajowa Karolin;  istnieje, ujęta w MPZP"
       },
       "geometry": {
         "type": "Point",
         "coordinates": [20.88168, 52.21442]
       }
     },
-{
+    {
       "type": "Feature",
       "properties": {
         "name": "Cmentarz Wolski",
@@ -129,6 +129,19 @@
       "geometry": {
         "type": "Point",
         "coordinates": [20.93102982655353, 52.224784599999445]
+      }
+    },
+ {
+      "type": "Feature",
+      "properties": {
+        "name": "Planowana pętla Chrzanów",
+        "type": "tram",
+        "kategoria": "d",
+        "opis": "Planowana pętla tramwajowa Chrzanów; jeszcze nie istnieje, ujęta w MPZP"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [20.89361, 52.21670]
       }
     }
   ]
